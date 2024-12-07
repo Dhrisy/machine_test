@@ -38,6 +38,7 @@ class LoginService {
       return false;
     } catch (e) {
       print("Unexpected error $e");
+      provider.setLoginError("Unexpected error!");
       return false;
     }
   }

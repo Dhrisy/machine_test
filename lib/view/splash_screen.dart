@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:machine_test/controller/auth_provider.dart';
-import 'package:machine_test/screens/login.dart';
-import 'package:machine_test/screens/navbar/navbar.dart';
+import 'package:machine_test/view/login.dart';
+import 'package:machine_test/view/navbar/navbar.dart';
 import 'package:machine_test/utils/animated_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       Navigator.pushAndRemoveUntil(
           context,
-          AnimatedNavigation().fadeAnimation(Navbar()),
+          AnimatedNavigation().fadeAnimation(Login()),
           (Route<dynamic> route) => false);
     }
   }
@@ -44,7 +44,10 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Material(
       child: Center(
-        child: Text("Hello...!"),
+        child: Text("Hello...!",
+        style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+          fontWeight: FontWeight.bold
+        ),),
       ),
     );
   }

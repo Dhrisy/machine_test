@@ -1,6 +1,7 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:machine_test/controller/auth_provider.dart';
-import 'package:machine_test/screens/navbar/navbar.dart';
+import 'package:machine_test/view/navbar/navbar.dart';
 import 'package:machine_test/services/login_service.dart';
 import 'package:machine_test/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -93,35 +94,9 @@ class _LoginState extends State<Login> {
                     height: 45,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                primaryColor,
-                            elevation: 2),
+                            backgroundColor: primaryColor, elevation: 2),
                         onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            provider.setLoading(true);
-                            final result = await LoginService.login(
-                                email: _emailController.text,
-                                password: _pwController.text,
-                                provider: provider);
-
-                            if (result == true) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(provider.loginError)));
-
-                              provider.setLoading(false);
-                              provider.setLoginError("");
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Navbar()),
-                                  (Route<dynamic> route) => false);
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(provider.loginError)));
-                              provider.setLoading(false);
-                              provider.setLoginError("");
-                            }
-                          }
+                          _loginAction(provider);
                         },
                         child: provider.isLoading
                             ? SizedBox(
@@ -141,6 +116,42 @@ class _LoginState extends State<Login> {
         ),
       )),
     );
+  }
+
+  void _loginAction(AuthProvider provider) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (_formKey.currentState!.validate()) {
+      provider.setLoading(true);
+      if (connectivityResult.contains(ConnectivityResult.none)) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                "Oops! something went wrong. Check your internet connection")));
+                 provider.setLoading(false);
+      } else {
+        final result = await LoginService.login(
+            email: _emailController.text,
+            password: _pwController.text,
+            provider: provider);
+
+        if (result == true) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(provider.loginError)));
+
+          provider.setLoading(false);
+          provider.setLoginError("");
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => Navbar()),
+              (Route<dynamic> route) => false);
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(provider.loginError)));
+          provider.setLoading(false);
+          provider.setLoginError("");
+        }
+      }
+    }
   }
 
   Widget _buildTextFormField({

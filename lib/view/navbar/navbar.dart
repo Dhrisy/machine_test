@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:machine_test/controller/navbar_provider.dart';
-import 'package:machine_test/screens/home_screen/home_screen.dart';
-import 'package:machine_test/screens/profile/profile_screen.dart';
+import 'package:machine_test/view/home_screen/home_screen.dart';
+import 'package:machine_test/view/profile/profile_screen.dart';
 import 'package:machine_test/utils/constants.dart';
 import 'package:provider/provider.dart';
 
